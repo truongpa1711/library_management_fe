@@ -1,0 +1,207 @@
+.role-demo {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.role-info-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.role-info-card h2 {
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: center;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 1rem;
+}
+
+.current-user-info {
+  margin-bottom: 2rem;
+}
+
+.current-user-info h3 {
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #dee2e6;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.info-value {
+  font-weight: 500;
+}
+
+.role-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.role-badge.admin {
+  background: #dc3545;
+  color: white;
+}
+
+.role-badge.user {
+  background: #007bff;
+  color: white;
+}
+
+.info-value.yes {
+  color: #28a745;
+}
+
+.info-value.no {
+  color: #dc3545;
+}
+
+.access-demo {
+  margin-bottom: 2rem;
+}
+
+.access-demo h3 {
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+.access-section {
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.admin-access {
+  background: linear-gradient(135deg, #ffe8e8 0%, #fff0f0 100%);
+  border-left: 4px solid #dc3545;
+}
+
+.user-access {
+  background: linear-gradient(135deg, #e8f4ff 0%, #f0f8ff 100%);
+  border-left: 4px solid #007bff;
+}
+
+.access-section h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.access-section ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.access-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.test-instructions {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.test-instructions h3 {
+  color: #495057;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.instructions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.instruction-item {
+  padding: 1rem;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #ffc107;
+}
+
+.instruction-item strong {
+  color: #333;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.instruction-item p {
+  margin: 0;
+  color: #666;
+  line-height: 1.4;
+}
+
+.instruction-item code {
+  background: #e9ecef;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  color: #e83e8c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .role-demo {
+    padding: 1rem;
+  }
+
+  .role-info-card {
+    padding: 1.5rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .role-info-card {
+    padding: 1rem;
+  }
+
+  .access-section {
+    padding: 1rem;
+  }
+
+  .test-instructions {
+    padding: 1rem;
+  }
+
+  .instruction-item {
+    padding: 0.75rem;
+  }
+}

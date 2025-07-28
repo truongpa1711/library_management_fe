@@ -31,6 +31,10 @@ const BookDetails = () => {
   const [feedbackTotalPages, setFeedbackTotalPages] = useState(0);
   const [feedbackTotalElements, setFeedbackTotalElements] = useState(0);
   const [feedbackPageSize] = useState(5);
+  
+  // Rating statistics state
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalRatings, setTotalRatings] = useState(0);
 
   // Add feedback modal state
   const [showAddFeedbackModal, setShowAddFeedbackModal] = useState(false);
@@ -71,6 +75,14 @@ const BookDetails = () => {
         setFeedbackPage(data.data.number || 0);
         setFeedbackTotalPages(data.data.totalPages || 0);
         setFeedbackTotalElements(data.data.totalElements || 0);
+        
+        // Update rating statistics if available
+        if (data.data.averageRating !== undefined) {
+          setAverageRating(data.data.averageRating);
+        }
+        if (data.data.totalRatings !== undefined) {
+          setTotalRatings(data.data.totalRatings);
+        }
       } else {
         setFeedbacksError(data.message || 'Failed to fetch feedbacks');
       }
@@ -698,16 +710,24 @@ const BookDetails = () => {
             <section className="detail-section">
               <h3>Ratings & Reviews</h3>
               <div className="rating-section">
-                {book.averageRating ? (
+                {(averageRating > 0 || book.averageRating) ? (
                   <div className="rating-summary">
                     <div className="rating-score">
-                      <span className="rating-stars">⭐ {book.averageRating.toFixed(1)}</span>
-                      <span className="rating-count">({book.totalRatings} reviews)</span>
+                      <span className="rating-stars">⭐ {(averageRating || book.averageRating || 0).toFixed(1)}</span>
+                      <span className="rating-count">({totalRatings || book.totalRatings || 0} đánh giá)</span>
+                    </div>
+                    <div className="rating-details">
+                      <span className="rating-info">
+                        Điểm trung bình: <strong>{(averageRating || book.averageRating || 0).toFixed(1)}/5</strong>
+                      </span>
+                      <span className="rating-info">
+                        Tổng số đánh giá: <strong>{totalRatings || book.totalRatings || 0}</strong>
+                      </span>
                     </div>
                   </div>
                 ) : (
                   <div className="no-ratings">
-                    <p>No ratings yet. Be the first to rate this book!</p>
+                    <p>📝 Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá cuốn sách này!</p>
                   </div>
                 )}
                 
@@ -734,7 +754,17 @@ const BookDetails = () => {
                   ) : feedbacks.length > 0 ? (
                     <div className="feedbacks-content">
                       <div className="feedbacks-summary">
-                        <p>Hiển thị {feedbacks.length} trên {feedbackTotalElements} đánh giá</p>
+                        <div className="summary-stats">
+                          <span className="summary-text">
+                            Hiển thị {feedbacks.length} trên {feedbackTotalElements} đánh giá
+                          </span>
+                          {(averageRating > 0 || totalRatings > 0) && (
+                            <div className="summary-rating">
+                              <span className="summary-rating-score">⭐ {averageRating.toFixed(1)}</span>
+                              <span className="summary-rating-count">({totalRatings} đánh giá)</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       
                       <div className="feedbacks-list">

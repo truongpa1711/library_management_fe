@@ -43,6 +43,7 @@ const AdminLayout = ({ children }) => {
   const adminTabs = [
     { id: '/admin', label: 'Dashboard', icon: '📊' },
     { id: '/admin/books', label: 'Manage Books', icon: '📚' },
+    { id: '/admin/categories', label: 'Manage Categories', icon: '🏷️' },
     { id: '/admin/users', label: 'Manage Users', icon: '👥' },
     { id: '/admin/borrows', label: 'Borrow Requests', icon: '📝' },
     { id: '/admin/reservations', label: 'Manage Reservations', icon: '📋' },

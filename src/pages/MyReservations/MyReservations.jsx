@@ -253,7 +253,7 @@ const MyReservations = () => {
 
       {/* Stats Summary */}
       <div className="reservations-stats">
-        <div className="stat-card">
+        <div className="stat-card total">
           <div className="stat-icon">📋</div>
           <div className="stat-content">
             <h3>{reservations.length}</h3>
@@ -261,7 +261,7 @@ const MyReservations = () => {
           </div>
         </div>
         
-        <div className="stat-card">
+        <div className="stat-card pending">
           <div className="stat-icon">⏳</div>
           <div className="stat-content">
             <h3>{reservations.filter(r => r.status === 'PENDING' || r.status === 'APPROVED').length}</h3>
@@ -269,7 +269,7 @@ const MyReservations = () => {
           </div>
         </div>
         
-        <div className="stat-card">
+        <div className="stat-card fulfilled">
           <div className="stat-icon">✅</div>
           <div className="stat-content">
             <h3>{reservations.filter(r => r.status === 'FULFILLED').length}</h3>
@@ -277,7 +277,7 @@ const MyReservations = () => {
           </div>
         </div>
         
-        <div className="stat-card">
+        <div className="stat-card cancelled">
           <div className="stat-icon">❌</div>
           <div className="stat-content">
             <h3>{reservations.filter(r => r.status === 'CANCELLED' || r.status === 'REJECTED').length}</h3>

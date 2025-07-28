@@ -1469,3 +1469,86 @@
     justify-content: center;
   }
 }
+
+/* Borrow Book Modal Styles */
+.date-selection {
+  margin: 1.5rem 0;
+}
+
+.date-selection label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.date-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.date-note {
+  margin-top: 0.5rem;
+  color: #718096;
+}
+
+.date-note small {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.borrow-terms {
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  margin-top: 1rem;
+}
+
+.borrow-terms p {
+  margin: 0 0 0.75rem 0;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.borrow-terms ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: none;
+}
+
+.borrow-terms li {
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  line-height: 1.5;
+  position: relative;
+}
+
+.borrow-terms li:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive for borrow modal */
+@media (max-width: 480px) {
+  .date-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .borrow-terms {
+    padding: 0.75rem;
+  }
+  
+  .borrow-terms ul {
+    padding-left: 1rem;
+  }
+}

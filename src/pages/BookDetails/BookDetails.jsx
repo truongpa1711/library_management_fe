@@ -18,6 +18,8 @@ const BookDetails = () => {
   // Borrow book state
   const [borrowing, setBorrowing] = useState(false);
   const [userBorrowedBooks, setUserBorrowedBooks] = useState(new Set());
+  const [showBorrowModal, setShowBorrowModal] = useState(false);
+  const [expectedReturnDate, setExpectedReturnDate] = useState('');
 
   // Reservation state
   const [reserving, setReserving] = useState(false);
@@ -232,6 +234,28 @@ const BookDetails = () => {
     fetchUserReservedBooks();
   }, []);
 
+  // Helper function to get min and max dates for borrow period
+  const getDateLimits = () => {
+    const today = new Date();
+    const minDate = new Date();
+    minDate.setDate(today.getDate() + 1); // Minimum 1 day from now
+    
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 30); // Maximum 30 days from now
+    
+    return {
+      min: minDate.toISOString().split('T')[0],
+      max: maxDate.toISOString().split('T')[0]
+    };
+  };
+
+  // Initialize expected return date with default (14 days)
+  useEffect(() => {
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 14);
+    setExpectedReturnDate(defaultDate.toISOString().split('T')[0]);
+  }, []);
+
   const handleFeedbackPageChange = (newPage) => {
     if (newPage >= 0 && newPage < feedbackTotalPages && book) {
       setFeedbackPage(newPage);
@@ -363,19 +387,25 @@ const BookDetails = () => {
       return;
     }
 
+    // Show borrow modal instead of immediate borrowing
+    setShowBorrowModal(true);
+  };
+
+  const confirmBorrowBook = async () => {
+    if (!expectedReturnDate) {
+      alert('Vui lòng chọn ngày trả dự kiến');
+      return;
+    }
+
     setBorrowing(true);
     
     try {
       const token = auth.getAccessToken();
       if (!token) {
         alert('Authentication required. Please login again.');
+        setBorrowing(false);
         return;
       }
-
-      // Calculate due date (14 days from now)
-      const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + 14);
-      const dueDateString = dueDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
 
       const response = await fetch('/api/book-loans', {
         method: 'POST',
@@ -385,17 +415,23 @@ const BookDetails = () => {
         },
         body: JSON.stringify({
           bookIds: [book.id],
-          dueDate: dueDateString
+          dueDate: expectedReturnDate
         })
       });
 
       const data = await response.json();
 
       if (response.ok && data.status === 'success') {
-        alert(`Successfully borrowed "${book.title}"!\nDue date: ${dueDateString}`);
+        alert(`Successfully borrowed "${book.title}"!\nDue date: ${expectedReturnDate}`);
         
         // Update user borrowed books state
         setUserBorrowedBooks(prev => new Set(prev).add(book.id));
+        
+        // Close modal and reset
+        setShowBorrowModal(false);
+        const defaultDate = new Date();
+        defaultDate.setDate(defaultDate.getDate() + 14);
+        setExpectedReturnDate(defaultDate.toISOString().split('T')[0]);
         
         // Refresh book details to update availability
         window.location.reload();
@@ -984,6 +1020,88 @@ const BookDetails = () => {
                 disabled={updatingFeedback || !editFeedbackContent.trim() || editFeedbackRating === 0}
               >
                 {updatingFeedback ? 'Đang cập nhật...' : 'Cập nhật đánh giá'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Borrow Book Modal */}
+      {showBorrowModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>📚 Mượn sách</h3>
+              <button 
+                className="modal-close"
+                onClick={() => {
+                  setShowBorrowModal(false);
+                  const defaultDate = new Date();
+                  defaultDate.setDate(defaultDate.getDate() + 14);
+                  setExpectedReturnDate(defaultDate.toISOString().split('T')[0]);
+                }}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="book-info-modal">
+                <h4>📖 {book?.title}</h4>
+                <p>👤 {book?.author}</p>
+                <p>📚 {book?.genre}</p>
+                <p>📦 Số lượng còn lại: {book?.availableQuantity}</p>
+              </div>
+              
+              <div className="date-selection">
+                <label htmlFor="expectedReturnDate">
+                  <strong>Ngày trả dự kiến:</strong>
+                </label>
+                <input
+                  type="date"
+                  id="expectedReturnDate"
+                  value={expectedReturnDate}
+                  onChange={(e) => setExpectedReturnDate(e.target.value)}
+                  min={getDateLimits().min}
+                  max={getDateLimits().max}
+                  className="date-input"
+                />
+                <div className="date-note">
+                  <small>
+                    📅 Bạn có thể mượn từ ngày mai đến tối đa 30 ngày
+                  </small>
+                </div>
+              </div>
+              
+              <div className="borrow-terms">
+                <p><strong>Điều khoản mượn sách:</strong></p>
+                <ul>
+                  <li>📖 Bạn có trách nhiệm giữ gìn sách trong tình trạng tốt</li>
+                  <li>📅 Vui lòng trả sách đúng hạn để tránh phí phạt</li>
+                  <li>🔄 Có thể gia hạn 1 lần nếu không có người đặt trước</li>
+                  <li>💰 Phí phạt quá hạn: 5,000đ/ngày</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                className="btn btn-secondary"
+                onClick={() => {
+                  setShowBorrowModal(false);
+                  const defaultDate = new Date();
+                  defaultDate.setDate(defaultDate.getDate() + 14);
+                  setExpectedReturnDate(defaultDate.toISOString().split('T')[0]);
+                }}
+              >
+                Hủy
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={confirmBorrowBook}
+                disabled={borrowing || !expectedReturnDate}
+              >
+                {borrowing ? '⏳ Đang mượn...' : '✅ Xác nhận mượn sách'}
               </button>
             </div>
           </div>

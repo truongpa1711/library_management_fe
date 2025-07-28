@@ -31,16 +31,37 @@
 }
 
 .stat-card {
-  background-color: #9a9be2 !important;
-  background: #9798ed !important;
-  color: white !important;
-  padding: 2rem 1.5rem;
   border-radius: 16px;
+  padding: 2rem 1.5rem;
   text-align: center;
   box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
+}
+
+.stat-card.total {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background-color: #667eea !important;
+  color: white !important;
+}
+
+.stat-card.active {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+  background-color: #17a2b8 !important;
+  color: white !important;
+}
+
+.stat-card.returned {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+  background-color: #28a745 !important;
+  color: white !important;
+}
+
+.stat-card.overdue {
+  background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%) !important;
+  background-color: #dc3545 !important;
+  color: white !important;
 }
 
 .stat-card::before {
@@ -57,7 +78,7 @@
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .stat-card:hover::before {
@@ -389,6 +410,14 @@
   
   .stat-number {
     font-size: 2.5rem;
+  }
+  
+  .stat-card.total:hover,
+  .stat-card.active:hover,
+  .stat-card.returned:hover,
+  .stat-card.overdue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }
   
   .loans-grid {

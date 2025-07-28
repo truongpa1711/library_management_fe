@@ -269,23 +269,23 @@ const MyLoans = () => {
 
       {/* Stats Summary */}
       <div className="loans-stats">
-        <div className="stat-card">
+        <div className="stat-card total">
           <div className="stat-number">{loans.length}</div>
           <div className="stat-label">Tổng số sách đã mượn</div>
         </div>
-        <div className="stat-card">
+        <div className="stat-card active">
           <div className="stat-number">
             {loans.filter(loan => loan.status === 'ACTIVE' || loan.status === 'BORROWED').length}
           </div>
           <div className="stat-label">Đang mượn</div>
         </div>
-        <div className="stat-card">
+        <div className="stat-card returned">
           <div className="stat-number">
             {loans.filter(loan => loan.status === 'RETURNED').length}
           </div>
           <div className="stat-label">Đã trả</div>
         </div>
-        <div className="stat-card">
+        <div className="stat-card overdue">
           <div className="stat-number">
             {loans.filter(loan => {
               const daysUntilDue = getDaysUntilDue(loan.dueDate);

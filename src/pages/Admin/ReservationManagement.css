@@ -1,32 +1,32 @@
 /* Reservation Management Page Styles */
 .reservation-management-page {
+  padding: 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  background: #f8f9fa;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
 }
 
 /* Page Header */
 .page-header {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 2rem;
   margin-bottom: 2rem;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .page-header h1 {
-  color: white;
   margin: 0 0 0.5rem 0;
-  font-size: 2.5rem;
-  font-weight: 700;
+  color: #2c3e50!important;
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
 .page-header p {
-  color: rgba(255, 255, 255, 0.9);
   margin: 0;
-  font-size: 1.1rem;
+  color: #6c757d!important;
+  font-size: 0.95rem;
 }
 
 /* Loading and Error States */
@@ -41,7 +41,7 @@
 }
 
 .loading-spinner {
-  color: white;
+  color: #2c3e50;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
@@ -52,15 +52,16 @@
   content: '';
   width: 24px;
   height: 24px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid white;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #4a90e2;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 .error-message {
-  color: #ff6b6b;
-  background: rgba(255, 255, 255, 0.1);
+  color: #721c24;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
   padding: 1rem 2rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -80,37 +81,38 @@
   margin-bottom: 2rem;
 }
 
-.stat-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
+.reservation-management-page .stat-card {
+  background: white !important;
+  border-radius: 12px;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  border-left: 4px solid #4a90e2 !important;
 }
 
-.stat-card:hover {
+.reservation-management-page .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.stat-icon {
+.reservation-management-page .stat-icon {
   font-size: 2.5rem;
+  color: #4a90e2 !important;
   opacity: 0.9;
 }
 
-.stat-content h3 {
-  color: white;
+.reservation-management-page .stat-content h3 {
+  color: #2c3e50 !important;
   margin: 0;
   font-size: 2rem;
   font-weight: 700;
 }
 
-.stat-content p {
-  color: rgba(255, 255, 255, 0.8);
+.reservation-management-page .stat-content p {
+  color: #6c757d !important;
   margin: 0;
   font-size: 0.9rem;
   font-weight: 500;
@@ -161,16 +163,15 @@
 
 /* Results Summary */
 .results-summary {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
+  background: white;
   border-radius: 12px;
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .results-summary p {
-  color: white;
+  color: #2c3e50;
   margin: 0;
   font-size: 1rem;
 }
@@ -570,11 +571,12 @@
   }
 
   .page-header {
-    padding: 1.5rem;
+    padding: 1rem;
+    text-align: center;
   }
 
   .page-header h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .reservations-stats {
@@ -582,15 +584,15 @@
     gap: 1rem;
   }
 
-  .stat-card {
+  .reservation-management-page .stat-card {
     padding: 1rem;
   }
 
-  .stat-icon {
+  .reservation-management-page .stat-icon {
     font-size: 2rem;
   }
 
-  .stat-content h3 {
+  .reservation-management-page .stat-content h3 {
     font-size: 1.5rem;
   }
 

@@ -80,7 +80,7 @@
   margin-bottom: 2rem;
 }
 
-.stat-card {
+.my-reservations-page .stat-card {
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 1.5rem;
@@ -92,41 +92,41 @@
   /* Remove default background to avoid conflicts */
 }
 
-.stat-card.total {
+.my-reservations-page .stat-card.total {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
   background-color: #667eea !important;
   color: white !important;
 }
 
-.stat-card.pending {
+.my-reservations-page .stat-card.pending {
   background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
   background-color: #f39c12 !important;
   color: white !important;
 }
 
-.stat-card.fulfilled {
+.my-reservations-page .stat-card.fulfilled {
   background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%) !important;
   background-color: #27ae60 !important;
   color: white !important;
 }
 
-.stat-card.cancelled {
+.my-reservations-page .stat-card.cancelled {
   background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
   background-color: #e74c3c !important;
   color: white !important;
 }
 
-.stat-card:hover {
+.my-reservations-page .stat-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.stat-icon {
+.my-reservations-page .stat-icon {
   font-size: 2.5rem;
   opacity: 0.9;
 }
 
-.stat-content h3 {
+.my-reservations-page .stat-content h3 {
   color: inherit;
   margin: 0;
   font-size: 2rem;
@@ -134,7 +134,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.stat-content p {
+.my-reservations-page .stat-content p {
   color: inherit;
   opacity: 0.9;
   margin: 0;
@@ -580,22 +580,22 @@
     gap: 1rem;
   }
 
-  .stat-card {
+  .my-reservations-page .stat-card {
     padding: 1rem;
   }
 
-  .stat-icon {
+  .my-reservations-page .stat-icon {
     font-size: 2rem;
   }
 
-  .stat-content h3 {
+  .my-reservations-page .stat-content h3 {
     font-size: 1.5rem;
   }
 
-  .stat-card.total:hover,
-  .stat-card.pending:hover,
-  .stat-card.fulfilled:hover,
-  .stat-card.cancelled:hover {
+  .my-reservations-page .stat-card.total:hover,
+  .my-reservations-page .stat-card.pending:hover,
+  .my-reservations-page .stat-card.fulfilled:hover,
+  .my-reservations-page .stat-card.cancelled:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }

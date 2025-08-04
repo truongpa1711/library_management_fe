@@ -15,6 +15,7 @@ import FeedbackManagement from '../pages/Admin/FeedbackManagement';
 import ReservationManagement from '../pages/Admin/ReservationManagement';
 import CategoryManagement from '../pages/Admin/CategoryManagement';
 import BookManagement from '../pages/Admin/BookManagement';
+import LoanManagement from '../pages/Admin/LoanManagement';
 import UserManagement from '../pages/Admin/UserManagement';
 import RoleDemo from '../pages/Demo/RoleDemo';
 import Profile from '../pages/Profile/Profile';
@@ -56,6 +57,7 @@ const AppRoutes = () => {
                 <Route path="reservations" element={<ReservationManagement />} />
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="books" element={<BookManagement />} />
+                <Route path="loans" element={<LoanManagement />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="borrows" element={<div>Admin Borrows Page (Coming Soon)</div>} />
                 <Route path="reports" element={<div>Admin Reports Page (Coming Soon)</div>} />

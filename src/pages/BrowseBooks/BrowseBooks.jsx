@@ -12,12 +12,6 @@ const BrowseBooks = () => {
   const [error, setError] = useState('');
   const [booksError, setBooksError] = useState('');
   
-  // Borrowing state
-  const [borrowingBooks, setBorrowingBooks] = useState(new Set());
-  const [showBorrowModal, setShowBorrowModal] = useState(false);
-  const [selectedBookToBorrow, setSelectedBookToBorrow] = useState(null);
-  const [expectedReturnDate, setExpectedReturnDate] = useState('');
-  
   // Initialize state from sessionStorage if available
   const [selectedCategory, setSelectedCategory] = useState(() => {
     const saved = sessionStorage.getItem('browseBooks_selectedCategory');
@@ -97,28 +91,6 @@ const BrowseBooks = () => {
     }
   }, [books]);
 
-  // Helper function to get min and max dates for borrow period
-  const getDateLimits = () => {
-    const today = new Date();
-    const minDate = new Date();
-    minDate.setDate(today.getDate() + 1); // Minimum 1 day from now
-    
-    const maxDate = new Date();
-    maxDate.setDate(today.getDate() + 30); // Maximum 30 days from now
-    
-    return {
-      min: minDate.toISOString().split('T')[0],
-      max: maxDate.toISOString().split('T')[0]
-    };
-  };
-
-  // Initialize expected return date with default (14 days)
-  useEffect(() => {
-    const defaultDate = new Date();
-    defaultDate.setDate(defaultDate.getDate() + 14);
-    setExpectedReturnDate(defaultDate.toISOString().split('T')[0]);
-  }, []);
-
   // Fetch books by category
   const fetchBooks = async (categoryId, page = 0, size = 10) => {
     setBooksLoading(true);
@@ -183,77 +155,8 @@ const BrowseBooks = () => {
     // Prevent navigation to book details
     event.stopPropagation();
     
-    if (!book || book.availableQuantity <= 0) {
-      alert('This book is not available for borrowing.');
-      return;
-    }
-
-    // Show borrow modal instead of immediate borrowing
-    setSelectedBookToBorrow(book);
-    setShowBorrowModal(true);
-  };
-
-  const confirmBorrowBook = async () => {
-    if (!selectedBookToBorrow || !expectedReturnDate) {
-      alert('Vui lòng chọn ngày trả dự kiến');
-      return;
-    }
-
-    setBorrowingBooks(prev => new Set(prev).add(selectedBookToBorrow.id));
-    
-    try {
-      const token = auth.getAccessToken();
-      if (!token) {
-        alert('Authentication required. Please login again.');
-        setBorrowingBooks(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(selectedBookToBorrow.id);
-          return newSet;
-        });
-        return;
-      }
-
-      const response = await fetch('/api/book-loans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          bookIds: [selectedBookToBorrow.id],
-          dueDate: expectedReturnDate
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.status === 'success') {
-        alert(`Successfully borrowed "${selectedBookToBorrow.title}"!\nDue date: ${expectedReturnDate}`);
-        
-        // Close modal and reset
-        setShowBorrowModal(false);
-        setSelectedBookToBorrow(null);
-        const defaultDate = new Date();
-        defaultDate.setDate(defaultDate.getDate() + 14);
-        setExpectedReturnDate(defaultDate.toISOString().split('T')[0]);
-        
-        // Refresh books list to update availability
-        if (selectedCategory) {
-          fetchBooks(selectedCategory.id, pagination.page, pagination.size);
-        }
-      } else {
-        alert(data.message || 'Failed to borrow book. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error borrowing book:', error);
-      alert('Network error. Please check your connection and try again.');
-    } finally {
-      setBorrowingBooks(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(selectedBookToBorrow.id);
-        return newSet;
-      });
-    }
+    // Borrowing is now admin-only functionality
+    alert('Borrowing functionality is only available for administrators. Please contact library staff to borrow this book.');
   };
 
   return (
@@ -342,9 +245,8 @@ const BrowseBooks = () => {
                           <button 
                             className="book-action-primary"
                             onClick={(e) => handleBorrowBook(book, e)}
-                            disabled={borrowingBooks.has(book.id)}
                           >
-                            {borrowingBooks.has(book.id) ? '⏳ Borrowing...' : '📚 Borrow'}
+                            📚 Request Borrow
                           </button>
                         ) : (
                           <button className="book-action-disabled" disabled>
@@ -453,90 +355,6 @@ const BrowseBooks = () => {
           </div>
         )}
       </section>
-
-      {/* Borrow Book Modal */}
-      {showBorrowModal && selectedBookToBorrow && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>📚 Mượn sách</h3>
-              <button 
-                className="modal-close"
-                onClick={() => {
-                  setShowBorrowModal(false);
-                  setSelectedBookToBorrow(null);
-                  const defaultDate = new Date();
-                  defaultDate.setDate(defaultDate.getDate() + 14);
-                  setExpectedReturnDate(defaultDate.toISOString().split('T')[0]);
-                }}
-              >
-                ×
-              </button>
-            </div>
-            
-            <div className="modal-body">
-              <div className="book-info-modal">
-                <h4>📖 {selectedBookToBorrow.title}</h4>
-                <p>👤 {selectedBookToBorrow.author}</p>
-                <p>📚 {selectedBookToBorrow.genre}</p>
-                <p>📦 Số lượng còn lại: {selectedBookToBorrow.availableQuantity}</p>
-              </div>
-              
-              <div className="date-selection">
-                <label htmlFor="expectedReturnDate">
-                  <strong>Ngày trả dự kiến:</strong>
-                </label>
-                <input
-                  type="date"
-                  id="expectedReturnDate"
-                  value={expectedReturnDate}
-                  onChange={(e) => setExpectedReturnDate(e.target.value)}
-                  min={getDateLimits().min}
-                  max={getDateLimits().max}
-                  className="date-input"
-                />
-                <div className="date-note">
-                  <small>
-                    📅 Bạn có thể mượn từ ngày mai đến tối đa 30 ngày
-                  </small>
-                </div>
-              </div>
-              
-              <div className="borrow-terms">
-                <p><strong>Điều khoản mượn sách:</strong></p>
-                <ul>
-                  <li>📖 Bạn có trách nhiệm giữ gìn sách trong tình trạng tốt</li>
-                  <li>📅 Vui lòng trả sách đúng hạn để tránh phí phạt</li>
-                  <li>🔄 Có thể gia hạn 1 lần nếu không có người đặt trước</li>
-                  <li>💰 Phí phạt quá hạn: 5,000đ/ngày</li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="modal-footer">
-              <button 
-                className="btn btn-secondary"
-                onClick={() => {
-                  setShowBorrowModal(false);
-                  setSelectedBookToBorrow(null);
-                  const defaultDate = new Date();
-                  defaultDate.setDate(defaultDate.getDate() + 14);
-                  setExpectedReturnDate(defaultDate.toISOString().split('T')[0]);
-                }}
-              >
-                Hủy
-              </button>
-              <button 
-                className="btn btn-primary"
-                onClick={confirmBorrowBook}
-                disabled={borrowingBooks.has(selectedBookToBorrow.id) || !expectedReturnDate}
-              >
-                {borrowingBooks.has(selectedBookToBorrow.id) ? '⏳ Đang mượn...' : '✅ Xác nhận mượn sách'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

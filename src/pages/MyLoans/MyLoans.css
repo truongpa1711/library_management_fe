@@ -30,7 +30,7 @@
   margin-bottom: 2rem;
 }
 
-.stat-card {
+.loan-stat-card {
   border-radius: 16px;
   padding: 2rem 1.5rem;
   text-align: center;
@@ -40,31 +40,31 @@
   overflow: hidden;
 }
 
-.stat-card.total {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  background-color: #667eea !important;
-  color: white !important;
+.loan-stat-card.total {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #667eea ;
+  color: white;
 }
 
-.stat-card.active {
-  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
-  background-color: #17a2b8 !important;
-  color: white !important;
+.loan-stat-card.active {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+  background-color: #17a2b8;
+  color: white;
 }
 
-.stat-card.returned {
-  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
-  background-color: #28a745 !important;
-  color: white !important;
+.loan-stat-card.returned {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  background-color: #28a745;
+  color: white ;
 }
 
-.stat-card.overdue {
-  background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%) !important;
-  background-color: #dc3545 !important;
-  color: white !important;
+.loan-stat-card.overdue {
+  background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);
+  background-color: #dc3545;
+  color: white;
 }
 
-.stat-card::before {
+.loan-stat-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -76,12 +76,12 @@
   transition: opacity 0.3s ease;
 }
 
-.stat-card:hover {
+.loan-stat-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.stat-card:hover::before {
+.loan-stat-card:hover::before {
   opacity: 1;
 }
 
@@ -404,7 +404,7 @@
     gap: 1rem;
   }
   
-  .stat-card {
+  .loan-stat-card {
     padding: 1.5rem 1rem;
   }
   
@@ -412,10 +412,10 @@
     font-size: 2.5rem;
   }
   
-  .stat-card.total:hover,
-  .stat-card.active:hover,
-  .stat-card.returned:hover,
-  .stat-card.overdue:hover {
+  .loan-stat-card.total:hover,
+  .loan-stat-card.active:hover,
+  .loan-stat-card.returned:hover,
+  .loan-stat-card.overdue:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }
@@ -455,7 +455,7 @@
     gap: 1rem;
   }
   
-  .stat-card {
+  .loan-stat-card {
     padding: 1.25rem;
   }
   

@@ -1,14 +1,14 @@
 /* All Books Page Styles */
 .all-books {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #fbfcfd 0%, #764ba2 100%);
   padding: 2rem;
 }
 
 /* Header */
 .all-books-header {
   text-align: center;
-  color: white;
+  color: linear-gradient(135deg, #fbfcfd 0%, #764ba2 100%);
   margin-bottom: 2rem;
 }
 

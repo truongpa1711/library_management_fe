@@ -431,7 +431,7 @@ const UserManagement = () => {
                           >
                             ✏️ Sửa
                           </button>
-                          {user.active ? (
+                          {/* {user.active ? (
                             <button 
                               className="btn-disable"
                               title="Vô hiệu hóa người dùng"
@@ -445,13 +445,13 @@ const UserManagement = () => {
                             >
                               ✅ Kích hoạt
                             </button>
-                          )}
-                          <button 
+                          )} */}
+                          {/* <button 
                             className="btn-delete"
                             title="Xóa người dùng"
                           >
                             🗑️ Xóa
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>

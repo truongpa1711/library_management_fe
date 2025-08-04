@@ -45,8 +45,8 @@ const AdminLayout = ({ children }) => {
     { id: '/admin/books', label: 'Manage Books', icon: '📚' },
     { id: '/admin/categories', label: 'Manage Categories', icon: '🏷️' },
     { id: '/admin/users', label: 'Manage Users', icon: '👥' },
-    { id: '/admin/borrows', label: 'Borrow Requests', icon: '📝' },
-    { id: '/admin/reservations', label: 'Manage Reservations', icon: '📋' },
+    { id: '/admin/loans', label: 'Loan Management', icon: '�' },
+    { id: '/admin/reservations', label: 'Manage Reservations', icon: '�' },
     { id: '/admin/feedbacks', label: 'Manage Feedbacks', icon: '💬' },
     { id: '/admin/reports', label: 'Reports', icon: '📈' },
     { id: '/admin/settings', label: 'Settings', icon: '⚙️' }

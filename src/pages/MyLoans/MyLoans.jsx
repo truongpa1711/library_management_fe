@@ -13,11 +13,6 @@ const MyLoans = () => {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [filteredLoans, setFilteredLoans] = useState([]);
 
-  // Return book modal state
-  const [showReturnModal, setShowReturnModal] = useState(false);
-  const [selectedLoan, setSelectedLoan] = useState(null);
-  const [bookCondition, setBookCondition] = useState('GOOD');
-
   useEffect(() => {
     const fetchMyLoans = async () => {
       setLoading(true);
@@ -91,68 +86,6 @@ const MyLoans = () => {
 
   const handleViewBook = (bookId) => {
     navigate(`/book/${bookId}`);
-  };
-
-  const handleReturnBook = async (loanId, loan) => {
-    console.log('handleReturnBook called with:', { loanId }); // Debug log
-    
-    if (!loanId || loanId === 'undefined') {
-      alert('Lỗi: Không tìm thấy ID của loan. Vui lòng thử lại.');
-      return;
-    }
-
-    // Set selected loan and show modal
-    setSelectedLoan(loan);
-    setShowReturnModal(true);
-  };
-
-  const confirmReturnBook = async () => {
-    const loanId = selectedLoan?.id || selectedLoan?.loanId || selectedLoan?.bookLoanId;
-    
-    if (!loanId) {
-      alert('Lỗi: Không tìm thấy ID của loan. Vui lòng thử lại.');
-      return;
-    }
-
-    try {
-      const token = auth.getAccessToken();
-      if (!token) {
-        alert('Authentication required. Please login again.');
-        return;
-      }
-
-      console.log('Returning book with ID:', loanId, 'condition:', bookCondition); // Debug log
-
-      const response = await fetch(`/api/book-loans/${loanId}/return`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          bookCondition: bookCondition
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.status === 'success') {
-        alert('Trả sách thành công!');
-        
-        // Close modal and reset
-        setShowReturnModal(false);
-        setSelectedLoan(null);
-        setBookCondition('GOOD');
-        
-        // Refresh the loans list
-        window.location.reload();
-      } else {
-        alert(data.message || 'Trả sách thất bại. Vui lòng thử lại.');
-      }
-    } catch (error) {
-      console.error('Error returning book:', error);
-      alert('Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.');
-    }
   };
 
   const handleExtendLoan = async (loanId, currentDueDate) => {
@@ -269,23 +202,23 @@ const MyLoans = () => {
 
       {/* Stats Summary */}
       <div className="loans-stats">
-        <div className="stat-card total">
+        <div className="loan-stat-card total">
           <div className="stat-number">{loans.length}</div>
           <div className="stat-label">Tổng số sách đã mượn</div>
         </div>
-        <div className="stat-card active">
+        <div className="loan-stat-card active">
           <div className="stat-number">
             {loans.filter(loan => loan.status === 'ACTIVE' || loan.status === 'BORROWED').length}
           </div>
           <div className="stat-label">Đang mượn</div>
         </div>
-        <div className="stat-card returned">
+        <div className="loan-stat-card returned">
           <div className="stat-number">
             {loans.filter(loan => loan.status === 'RETURNED').length}
           </div>
           <div className="stat-label">Đã trả</div>
         </div>
-        <div className="stat-card overdue">
+        <div className="loan-stat-card overdue">
           <div className="stat-number">
             {loans.filter(loan => {
               const daysUntilDue = getDaysUntilDue(loan.dueDate);
@@ -395,26 +328,15 @@ const MyLoans = () => {
                       👁️ Xem chi tiết
                     </button>
                     {(loan.status === 'ACTIVE' || loan.status === 'BORROWED') && (
-                      <>
-                        <button 
-                          className="btn btn-warning"
-                          onClick={() => {
-                            console.log('Extend button clicked for loan:', loan); // Debug full loan object
-                            handleExtendLoan(loan.id || loan.loanId || loan.bookLoanId, loan.dueDate);
-                          }}
-                        >
-                          📅 Gia hạn
-                        </button>
-                        <button 
-                          className="btn btn-primary"
-                          onClick={() => {
-                            console.log('Return button clicked for loan:', loan); // Debug full loan object
-                            handleReturnBook(loan.id || loan.loanId || loan.bookLoanId, loan);
-                          }}
-                        >
-                          📤 Trả sách
-                        </button>
-                      </>
+                      <button 
+                        className="btn btn-warning"
+                        onClick={() => {
+                          console.log('Extend button clicked for loan:', loan); // Debug full loan object
+                          handleExtendLoan(loan.id || loan.loanId || loan.bookLoanId, loan.dueDate);
+                        }}
+                      >
+                        📅 Gia hạn
+                      </button>
                     )}
                   </div>
                 </div>
@@ -445,93 +367,6 @@ const MyLoans = () => {
           </div>
         )}
       </div>
-
-      {/* Return Book Modal */}
-      {showReturnModal && selectedLoan && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>📤 Trả sách</h3>
-              <button 
-                className="modal-close"
-                onClick={() => {
-                  setShowReturnModal(false);
-                  setSelectedLoan(null);
-                  setBookCondition('GOOD');
-                }}
-              >
-                ×
-              </button>
-            </div>
-            
-            <div className="modal-body">
-              <div className="book-info">
-                <h4>📖 {selectedLoan.bookTitle}</h4>
-                <p>👤 {selectedLoan.bookAuthor}</p>
-                <p>📅 Ngày mượn: {formatDate(selectedLoan.borrowDate)}</p>
-                <p>⏰ Hạn trả: {formatDate(selectedLoan.dueDate)}</p>
-              </div>
-              
-              <div className="condition-selection">
-                <label>Tình trạng sách khi trả:</label>
-                <div className="condition-options">
-                  <label className="condition-option">
-                    <input
-                      type="radio"
-                      name="bookCondition"
-                      value="GOOD"
-                      checked={bookCondition === 'GOOD'}
-                      onChange={(e) => setBookCondition(e.target.value)}
-                    />
-                    <span className="condition-label good">✅ Tình trạng tốt</span>
-                  </label>
-                  
-                  <label className="condition-option">
-                    <input
-                      type="radio"
-                      name="bookCondition"
-                      value="DAMAGED"
-                      checked={bookCondition === 'DAMAGED'}
-                      onChange={(e) => setBookCondition(e.target.value)}
-                    />
-                    <span className="condition-label damaged">⚠️ Bị hư hỏng</span>
-                  </label>
-                  
-                  <label className="condition-option">
-                    <input
-                      type="radio"
-                      name="bookCondition"
-                      value="LOST"
-                      checked={bookCondition === 'LOST'}
-                      onChange={(e) => setBookCondition(e.target.value)}
-                    />
-                    <span className="condition-label lost">❌ Bị mất</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            
-            <div className="modal-footer">
-              <button 
-                className="btn btn-secondary"
-                onClick={() => {
-                  setShowReturnModal(false);
-                  setSelectedLoan(null);
-                  setBookCondition('GOOD');
-                }}
-              >
-                Hủy
-              </button>
-              <button 
-                className="btn btn-primary"
-                onClick={confirmReturnBook}
-              >
-                Xác nhận trả sách
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

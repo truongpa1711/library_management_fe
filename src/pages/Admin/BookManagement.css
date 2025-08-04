@@ -776,3 +776,152 @@
     font-size: 0.75rem;
   }
 }
+
+/* Lending Modal Styles */
+.btn-lend {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-lend:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.btn-lend:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.book-info-section,
+.user-selection-section,
+.due-date-section,
+.lending-terms {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.book-info-section h4,
+.user-selection-section h4,
+.due-date-section h4,
+.lending-terms h4 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.book-details p {
+  margin: 0.5rem 0;
+  color: #495057;
+}
+
+.user-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.user-search label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.search-loading {
+  padding: 0.5rem;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.user-search-results {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: white;
+}
+
+.user-result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #f1f3f4;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.user-result-item:hover {
+  background-color: #f8f9fa;
+}
+
+.user-result-item:last-child {
+  border-bottom: none;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.user-info strong {
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
+.user-name {
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.select-user-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.select-user-btn:hover {
+  background: #0056b3;
+}
+
+.selected-user {
+  padding: 0.75rem;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 6px;
+  color: #155724;
+  font-weight: 500;
+}
+
+.lending-terms ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.lending-terms li {
+  margin: 0.5rem 0;
+  color: #495057;
+}
+
+/* Form input styling for lending modal */
+.due-date-section .form-input {
+  width: 100%;
+  max-width: 200px;
+}

@@ -9,9 +9,6 @@ const AllBooks = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  // Borrowing state
-  const [borrowingBooks, setBorrowingBooks] = useState(new Set());
-  
   // Search and filter state
   const [filters, setFilters] = useState({
     title: '',
@@ -207,70 +204,12 @@ const AllBooks = () => {
     navigate(`/book/${bookId}`);
   };
 
-  // Handle borrow book
-  const handleBorrowBook = async (book, event) => {
-    // Prevent navigation to book details
-    event.stopPropagation();
-    
-    if (!book || book.availableQuantity <= 0) {
-      alert('This book is not available for borrowing.');
-      return;
-    }
-
-    setBorrowingBooks(prev => new Set(prev).add(book.id));
-    
-    try {
-      const token = auth.getAccessToken();
-      if (!token) {
-        alert('Authentication required. Please login again.');
-        return;
-      }
-
-      // Calculate due date (14 days from now)
-      const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + 14);
-      const dueDateString = dueDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-
-      const response = await fetch('/api/book-loans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          bookIds: [book.id],
-          dueDate: dueDateString
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.status === 'success') {
-        alert(`Successfully borrowed "${book.title}"!\nDue date: ${dueDateString}`);
-        
-        // Refresh books list to update availability
-        fetchBooks(filters, pagination, sorting);
-      } else {
-        alert(data.message || 'Failed to borrow book. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error borrowing book:', error);
-      alert('Network error. Please check your connection and try again.');
-    } finally {
-      setBorrowingBooks(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(book.id);
-        return newSet;
-      });
-    }
-  };
-
   return (
     <div className="all-books">
       {/* Header */}
       <div className="all-books-header">
-        <h1>All Books</h1>
-        <p>Search and browse all books in our library</p>
+        <h1>📚 All Books</h1>
+        <p>Browse and discover books in our library</p>
       </div>
 
       {/* Search and Filter Section */}
@@ -426,24 +365,16 @@ const AllBooks = () => {
                       </div>
                       <div className="book-actions">
                         <button 
-                          className="book-action-secondary"
+                          className="book-action-primary"
                           onClick={() => handleBookClick(book.id)}
                         >
                           👁️ View Details
                         </button>
-                        {book.availableQuantity > 0 ? (
-                          <button 
-                            className="book-action-primary"
-                            onClick={(e) => handleBorrowBook(book, e)}
-                            disabled={borrowingBooks.has(book.id)}
-                          >
-                            {borrowingBooks.has(book.id) ? '⏳ Borrowing...' : '� Borrow'}
-                          </button>
-                        ) : (
-                          <button className="book-action-disabled" disabled>
-                            ❌ Not Available
-                          </button>
-                        )}
+                        <div className="availability-info">
+                          <span className={`availability-badge ${book.availableQuantity > 0 ? 'available' : 'unavailable'}`}>
+                            {book.availableQuantity > 0 ? `${book.availableQuantity} available` : 'Not available'}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}

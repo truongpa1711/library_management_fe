@@ -17,9 +17,9 @@ const UserLayout = ({ children }) => {
     { id: '/my-loans', label: 'Sách đã mượn', icon: '📖' },
     { id: '/my-fines', label: 'Phiếu phạt', icon: '💰' },
     { id: '/my-reservations', label: 'Đặt trước', icon: '📅' },
-    { id: '/history', label: 'Borrow History', icon: '📋' },
+    // { id: '/history', label: 'Borrow History', icon: '📋' },
     { id: '/profile', label: 'Profile', icon: '👤' },
-    { id: '/role-demo', label: 'Role Demo', icon: '🔐' }
+    // { id: '/role-demo', label: 'Role Demo', icon: '🔐' }
   ];
 
   const handleTabChange = (tabId) => {

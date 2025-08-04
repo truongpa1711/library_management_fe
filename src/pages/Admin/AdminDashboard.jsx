@@ -300,7 +300,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <div className="stat-content">
-                <div className="stat-value">{stat.value}</div>
+                <div className="stat-value" style={{ color: stat.color, fontSize: '1.5rem' }}>{stat.value}</div>
                 <div className="stat-label">{stat.label}</div>
               </div>
             </div>

@@ -71,8 +71,8 @@
   margin-bottom: 2rem;
 }
 
-.stat-card {
-  background: white;
+.home-dashboard .stat-card {
+  background: white !important;
   padding: 1.5rem;
   border-radius: 12px;
   border-left: 4px solid;
@@ -83,28 +83,28 @@
   transition: transform 0.2s ease;
 }
 
-.stat-card:hover {
+.home-dashboard .stat-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.stat-icon {
+.home-dashboard .stat-icon {
   font-size: 2rem;
 }
 
-.stat-content {
+.home-dashboard .stat-content {
   flex: 1;
 }
 
-.stat-value {
+.home-dashboard .home-dashboard .stat-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+  color: #333 !important;
   margin-bottom: 0.25rem;
 }
 
-.stat-label {
-  color: #666;
+.home-dashboard .stat-label {
+  color: #666 !important;
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -280,11 +280,11 @@
     padding: 1.5rem;
   }
 
-  .stat-card {
+  .home-dashboard .stat-card {
     padding: 1rem;
   }
 
-  .stat-value {
+  .home-dashboard .stat-value {
     font-size: 1.5rem;
   }
 

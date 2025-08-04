@@ -19,7 +19,18 @@ const BookManagement = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLendModal, setShowLendModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+
+  // Lending modal states
+  const [lendingData, setLendingData] = useState({
+    userId: '',
+    userEmail: '',
+    dueDate: ''
+  });
+  const [lending, setLending] = useState(false);
+  const [userSearchResults, setUserSearchResults] = useState([]);
+  const [searchingUsers, setSearchingUsers] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -201,6 +212,139 @@ const BookManagement = () => {
     setShowDeleteModal(true);
   };
 
+  const handleLendBook = (book) => {
+    setSelectedBook(book);
+    // Initialize lending data with default due date (14 days from now)
+    const defaultDueDate = new Date();
+    defaultDueDate.setDate(defaultDueDate.getDate() + 14);
+    setLendingData({
+      userId: '',
+      userEmail: '',
+      dueDate: defaultDueDate.toISOString().split('T')[0]
+    });
+    
+    // Test token validity when opening modal
+    const token = auth.getAccessToken();
+    if (!token) {
+      alert('Authentication required. Please login again.');
+      return;
+    }
+    
+    setShowLendModal(true);
+  };
+
+  // Search for users by email
+  const searchUsers = async (email) => {
+    if (!email.trim()) {
+      setUserSearchResults([]);
+      return;
+    }
+
+    setSearchingUsers(true);
+    try {
+      const token = auth.getAccessToken();
+      if (!token) {
+        alert('Authentication required. Please login again.');
+        setUserSearchResults([]);
+        return;
+      }
+
+      const response = await fetch(`/api/user/searchByEmail?email=${encodeURIComponent(email)}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('User search failed:', response.status, errorText);
+        setUserSearchResults([]);
+        return;
+      }
+
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        // API trả về paginated response với users trong data.content
+        const users = data.data?.content || [];
+        setUserSearchResults(users);
+      } else {
+        setUserSearchResults([]);
+      }
+    } catch (error) {
+      console.error('Error searching users:', error);
+      setUserSearchResults([]);
+    } finally {
+      setSearchingUsers(false);
+    }
+  };
+
+  // Handle user selection
+  const handleSelectUser = (user) => {
+    setLendingData(prev => ({
+      ...prev,
+      userId: user.id,
+      userEmail: user.email
+    }));
+    setUserSearchResults([]);
+  };
+
+  // Handle lending book to user
+  const handleSubmitLending = async () => {
+    if (!lendingData.userId || !lendingData.dueDate) {
+      alert('Vui lòng chọn người dùng và ngày trả dự kiến');
+      return;
+    }
+
+    setLending(true);
+    try {
+      const token = auth.getAccessToken();
+      if (!token) {
+        alert('Authentication required. Please login again.');
+        return;
+      }
+
+      const response = await fetch(`/api/book-loans/${lendingData.userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          bookIds: [selectedBook.id],
+          dueDate: lendingData.dueDate
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.status === 'success') {
+        alert(`Successfully lent "${selectedBook.title}" to ${lendingData.userEmail}!\nDue date: ${lendingData.dueDate}`);
+        
+        // Close modal and reset
+        setShowLendModal(false);
+        setLendingData({
+          userId: '',
+          userEmail: '',
+          dueDate: ''
+        });
+        setSelectedBook(null);
+        
+        // Refresh books list
+        fetchBooks(page, searchFilters);
+      } else {
+        alert(data.message || 'Failed to lend book. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error lending book:', error);
+      alert('Network error. Please check your connection and try again.');
+    } finally {
+      setLending(false);
+    }
+  };
+
   const handleSubmitAdd = async () => {
     if (!formData.title.trim() || !formData.author.trim() || !formData.isbn.trim()) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc (Tên sách, Tác giả, ISBN)');
@@ -351,7 +495,14 @@ const BookManagement = () => {
     setShowAddModal(false);
     setShowEditModal(false);
     setShowDeleteModal(false);
+    setShowLendModal(false);
     setSelectedBook(null);
+    setLendingData({
+      userId: '',
+      userEmail: '',
+      dueDate: ''
+    });
+    setUserSearchResults([]);
     resetForm();
   };
 
@@ -545,6 +696,14 @@ const BookManagement = () => {
                     </td>
                     <td>
                       <div className="action-buttons">
+                        <button
+                          className="btn btn-lend"
+                          onClick={() => handleLendBook(book)}
+                          title="Cho mượn sách"
+                          disabled={book.availableQuantity <= 0}
+                        >
+                          📚
+                        </button>
                         <button
                           className="btn btn-edit"
                           onClick={() => handleEditBook(book)}
@@ -1042,6 +1201,122 @@ const BookManagement = () => {
                 disabled={submitting}
               >
                 {submitting ? 'Đang xóa...' : 'Xóa sách'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lend Book Modal */}
+      {showLendModal && selectedBook && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>📚 Cho mượn sách</h3>
+              <button className="modal-close" onClick={() => setShowLendModal(false)}>
+                ×
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="book-info-section">
+                <h4>Thông tin sách</h4>
+                <div className="book-details">
+                  <p><strong>Tên sách:</strong> {selectedBook.title}</p>
+                  <p><strong>Tác giả:</strong> {selectedBook.author}</p>
+                  <p><strong>ISBN:</strong> {selectedBook.isbn}</p>
+                  <p><strong>Số lượng có sẵn:</strong> {selectedBook.availableQuantity}</p>
+                </div>
+              </div>
+
+              <div className="user-selection-section">
+                <h4>Chọn người dùng</h4>
+                <div className="user-search">
+                  <label>Email người dùng:</label>
+                  <input
+                    type="email"
+                    placeholder="Nhập email để tìm kiếm..."
+                    value={lendingData.userEmail}
+                    onChange={(e) => {
+                      setLendingData(prev => ({
+                        ...prev,
+                        userEmail: e.target.value,
+                        userId: ''
+                      }));
+                      searchUsers(e.target.value);
+                    }}
+                    className="form-input"
+                  />
+                  
+                  {searchingUsers && (
+                    <div className="search-loading">🔍 Đang tìm kiếm...</div>
+                  )}
+                  
+                  {userSearchResults.length > 0 && (
+                    <div className="user-search-results">
+                      {userSearchResults.map((user) => (
+                        <div
+                          key={user.id}
+                          className="user-result-item"
+                          onClick={() => handleSelectUser(user)}
+                        >
+                          <div className="user-info">
+                            <strong>{user.email}</strong>
+                            <span className="user-name">{user.firstName} {user.lastName}</span>
+                          </div>
+                          <button className="select-user-btn">Chọn</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {lendingData.userId && (
+                    <div className="selected-user">
+                      ✅ Đã chọn: {lendingData.userEmail}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="due-date-section">
+                <h4>Ngày trả dự kiến</h4>
+                <label>Chọn ngày trả:</label>
+                <input
+                  type="date"
+                  value={lendingData.dueDate}
+                  onChange={(e) => setLendingData(prev => ({
+                    ...prev,
+                    dueDate: e.target.value
+                  }))}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="form-input"
+                />
+              </div>
+
+              <div className="lending-terms">
+                <h4>Điều khoản cho mượn</h4>
+                <ul>
+                  <li>📖 Người mượn có trách nhiệm giữ gìn sách trong tình trạng tốt</li>
+                  <li>📅 Phải trả sách đúng hạn để tránh phí phạt</li>
+                  <li>🔄 Có thể gia hạn 1 lần nếu không có người đặt trước</li>
+                  <li>💰 Phí phạt quá hạn: 5,000đ/ngày</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => setShowLendModal(false)}
+              >
+                Hủy
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleSubmitLending}
+                disabled={lending || !lendingData.userId || !lendingData.dueDate}
+              >
+                {lending ? '⏳ Đang cho mượn...' : '✅ Cho mượn sách'}
               </button>
             </div>
           </div>

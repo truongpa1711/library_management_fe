@@ -1,32 +1,32 @@
 /* Feedback Management Styles */
 .feedback-management {
+  padding: 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  background: #f8f9fa;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
 }
 
 /* Page Header */
 .page-header {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 2rem;
   margin-bottom: 2rem;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .page-header h1 {
-  color: white;
   margin: 0 0 0.5rem 0;
-  font-size: 2.5rem;
-  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
 .page-header p {
-  color: rgba(255, 255, 255, 0.9);
   margin: 0;
-  font-size: 1.1rem;
+  color: #6c757d;
+  font-size: 0.95rem;
 }
 
 /* Loading States */
@@ -38,7 +38,7 @@
 }
 
 .loading-spinner {
-  color: white;
+  color: #2c3e50;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
@@ -49,8 +49,8 @@
   content: '';
   width: 24px;
   height: 24px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid white;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #4a90e2;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -637,11 +637,12 @@
   }
 
   .page-header {
-    padding: 1.5rem;
+    padding: 1rem;
+    text-align: center;
   }
 
   .page-header h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .filters-section {

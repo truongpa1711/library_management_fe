@@ -240,7 +240,7 @@ const FeedbackManagement = () => {
         return;
       }
 
-      const response = await fetch(`/api/feedbacks/${feedbackId}`, {
+      const response = await fetch(`/api/feedbacks/admin/${feedbackId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

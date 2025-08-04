@@ -418,7 +418,7 @@ const Profile = () => {
               </div>
               <div className="stat-item">
                 <span className="stat-label">Last Updated</span>
-                <span className="stat-value">🕒 Just now</span>
+                <span className="stat-value">🕒{new Date(profileData.updatedAt).toLocaleString()}</span>
               </div>
             </div>
           </div>

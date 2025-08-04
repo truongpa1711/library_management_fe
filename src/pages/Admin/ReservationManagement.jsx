@@ -29,6 +29,11 @@ const ReservationManagement = () => {
   const [newStatus, setNewStatus] = useState('');
   const [updating, setUpdating] = useState(false);
 
+  // Delete modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedDeleteReservation, setSelectedDeleteReservation] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
   const fetchReservations = useCallback(async (page = 0, appliedFilters = filters) => {
     setLoading(true);
     setError('');
@@ -132,6 +137,11 @@ const ReservationManagement = () => {
     setShowUpdateModal(true);
   };
 
+  const handleDeleteReservation = (reservation) => {
+    setSelectedDeleteReservation(reservation);
+    setShowDeleteModal(true);
+  };
+
   const confirmUpdateStatus = async () => {
     if (!selectedReservation || !newStatus) return;
 
@@ -172,6 +182,48 @@ const ReservationManagement = () => {
     } finally {
       setUpdating(false);
     }
+  };
+
+  const confirmDeleteReservation = async () => {
+    if (!selectedDeleteReservation) return;
+
+    setDeleting(true);
+
+    try {
+      const token = auth.getAccessToken();
+      if (!token) {
+        alert('Authentication required. Please login again.');
+        return;
+      }
+
+      const response = await fetch(`/api/reservations/admin/${selectedDeleteReservation.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.status === 'success') {
+        alert(`Đã xóa đặt trước thành công!\nID: #${selectedDeleteReservation.id}\nSách: ${selectedDeleteReservation.bookTitle}`);
+        setShowDeleteModal(false);
+        setSelectedDeleteReservation(null);
+        fetchReservations(pagination.page);
+      } else {
+        alert(data.message || 'Failed to delete reservation');
+      }
+    } catch (error) {
+      console.error('Error deleting reservation:', error);
+      alert('Network error. Please try again.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setSelectedDeleteReservation(null);
   };
 
   const getStatusColor = (status) => {
@@ -355,7 +407,7 @@ const ReservationManagement = () => {
 
       {/* Reservations List */}
       {filteredReservations.length > 0 ? (
-        <div className="reservations-list">
+        <div className="reservations-grid">
           {filteredReservations.map((reservation) => (
             <div key={reservation.id} className={`reservation-card status-${reservation.status.toLowerCase()}`}>
               <div className="reservation-header">
@@ -413,23 +465,37 @@ const ReservationManagement = () => {
               </div>
 
               <div className="reservation-actions">
-                {reservation.status === 'PENDING' || reservation.status === 'APPROVED' ? (
-                  <button 
-                    className="btn btn-primary"
-                    onClick={() => handleUpdateStatus(reservation)}
+                <div className="action-buttons">
+                  {reservation.status === 'PENDING' || reservation.status === 'APPROVED' ? (
+                    <button 
+                      className="btn btn-primary btn-sm"
+                      onClick={() => handleUpdateStatus(reservation)}
+                    >
+                      🔄 Cập nhật trạng thái
+                    </button>
+                  ) : (
+                    <div className="status-info">
+                      <span className={`status-final ${
+                        reservation.status === 'FULFILLED' ? 'status-fulfilled' : 
+                        reservation.status === 'CANCELLED' ? 'status-cancelled' :
+                        reservation.status === 'REJECTED' ? 'status-rejected' : 
+                        'status-default'
+                      }`}>
+                        {reservation.status === 'FULFILLED' ? '✅ Đã hoàn thành' : 
+                         reservation.status === 'CANCELLED' ? '❌ Đã hủy' :
+                         reservation.status === 'REJECTED' ? '🚫 Bị từ chối' : 
+                         reservation.status}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDeleteReservation(reservation)}
+                    title="Xóa đặt trước"
                   >
-                    🔄 Cập nhật trạng thái
+                    🗑️ Xóa
                   </button>
-                ) : (
-                  <div className="status-info">
-                    <span className="status-final">
-                      {reservation.status === 'FULFILLED' ? '✅ Đã hoàn thành' : 
-                       reservation.status === 'CANCELLED' ? '❌ Đã hủy' :
-                       reservation.status === 'REJECTED' ? '🚫 Bị từ chối' : 
-                       reservation.status}
-                    </span>
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           ))}
@@ -560,6 +626,56 @@ const ReservationManagement = () => {
                 disabled={updating || newStatus === selectedReservation.status}
               >
                 {updating ? 'Đang cập nhật...' : 'Cập nhật'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && selectedDeleteReservation && (
+        <div className="modal-overlay" onClick={closeDeleteModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>🗑️ Xác nhận xóa đặt trước</h3>
+              <button 
+                className="close-btn" 
+                onClick={closeDeleteModal}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="reservation-info-modal">
+                <h4>📚 {selectedDeleteReservation.bookTitle}</h4>
+                <p>👤 User: {selectedDeleteReservation.userEmail}</p>
+                <p>📅 Ngày đặt: {new Date(selectedDeleteReservation.reservationDate).toLocaleDateString('vi-VN')}</p>
+                <p>📊 Trạng thái: {getStatusText(selectedDeleteReservation.status)}</p>
+              </div>
+              
+              <div className="warning-section">
+                <div className="warning-icon">⚠️</div>
+                <p>Bạn có chắc chắn muốn xóa đặt trước này?</p>
+                <p className="warning-text">
+                  ⚠️ Hành động này không thể hoàn tác! Tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn.
+                </p>
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                className="btn btn-secondary"
+                onClick={closeDeleteModal}
+              >
+                Hủy
+              </button>
+              <button 
+                className="btn btn-danger"
+                onClick={confirmDeleteReservation}
+                disabled={deleting}
+              >
+                {deleting ? '⏳ Đang xóa...' : '🗑️ Xác nhận xóa'}
               </button>
             </div>
           </div>

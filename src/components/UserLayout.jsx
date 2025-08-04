@@ -51,7 +51,7 @@ const UserLayout = ({ children }) => {
       {/* Header */}
       <header className="user-header">
         <div className="header-left">
-          <h1 className="app-title">📚 Library System</h1>
+          <h1 className="app-title-user">📚 Library System</h1>
           <span className="user-badge">User Portal</span>
         </div>
         <div className="header-right">
